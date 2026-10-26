@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 from langchain_mistralai import ChatMistralAI
 from langchain_core.prompts import ChatPromptTemplate
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
@@ -75,16 +75,47 @@ def judge_case(
     rubric_text: str,
     case: Dict[str, Any],
     output_field: str = "model_output_v1",
-) -> JudgeLLMOutput:
+) -> Tuple[JudgeLLMOutput, Dict[str, int]]:
+    """Return (verdict, usage). usage has input_tokens/output_tokens (0 if unknown)."""
     structured = _structured(judge_model, JudgeLLMOutput)
     chain = JUDGE_PROMPT | structured
-    return chain.invoke({
-        "rubric": rubric_text,
-        "system_prompt": case.get("system_prompt", ""),
-        "input": case["input"],
-        "expected_answer": case.get("expected_answer", "N/A"),
-        "model_output": case[output_field],
-    })
+
+    # Use include_raw=True so we can read the AIMessage for token usage
+    chain_with_raw = JUDGE_PROMPT | judge_model.with_structured_output(
+        JudgeLLMOutput,
+        method="json_schema",
+        include_raw=True,
+    )
+    try:
+        result = chain_with_raw.invoke({
+            "rubric": rubric_text,
+            "system_prompt": case.get("system_prompt", ""),
+            "input": case["input"],
+            "expected_answer": case.get("expected_answer", "N/A"),
+            "model_output": case[output_field],
+        })
+    except Exception:
+        # Fallback path without usage
+        verdict = chain.invoke({
+            "rubric": rubric_text,
+            "system_prompt": case.get("system_prompt", ""),
+            "input": case["input"],
+            "expected_answer": case.get("expected_answer", "N/A"),
+            "model_output": case[output_field],
+        })
+        return verdict, {"input_tokens": 0, "output_tokens": 0}
+
+    parsed = result.get("parsed")
+    raw = result.get("raw")
+    if parsed is None:
+        # If parsing failed but raw exists, raise so tenacity retries
+        raise ValueError(f"Structured parse failed: {result.get('parsing_error')}")
+
+    usage = {"input_tokens": 0, "output_tokens": 0}
+    if raw is not None and getattr(raw, "usage_metadata", None):
+        usage["input_tokens"] = raw.usage_metadata.get("input_tokens", 0)
+        usage["output_tokens"] = raw.usage_metadata.get("output_tokens", 0)
+    return parsed, usage
 
 
 @retry(
@@ -99,17 +130,44 @@ def judge_pairwise(
     case: Dict[str, Any],
     output_a: str,
     output_b: str,
-) -> PairwiseLLMOutput:
+) -> Tuple[PairwiseLLMOutput, Dict[str, int]]:
     structured = _structured(judge_model, PairwiseLLMOutput)
     chain = PAIRWISE_PROMPT | structured
-    return chain.invoke({
-        "rubric": rubric_text,
-        "system_prompt": case.get("system_prompt", ""),
-        "input": case["input"],
-        "expected_answer": case.get("expected_answer", "N/A"),
-        "output_a": output_a,
-        "output_b": output_b,
-    })
+    chain_with_raw = PAIRWISE_PROMPT | judge_model.with_structured_output(
+        PairwiseLLMOutput,
+        method="json_schema",
+        include_raw=True,
+    )
+    try:
+        result = chain_with_raw.invoke({
+            "rubric": rubric_text,
+            "system_prompt": case.get("system_prompt", ""),
+            "input": case["input"],
+            "expected_answer": case.get("expected_answer", "N/A"),
+            "output_a": output_a,
+            "output_b": output_b,
+        })
+    except Exception:
+        verdict = chain.invoke({
+            "rubric": rubric_text,
+            "system_prompt": case.get("system_prompt", ""),
+            "input": case["input"],
+            "expected_answer": case.get("expected_answer", "N/A"),
+            "output_a": output_a,
+            "output_b": output_b,
+        })
+        return verdict, {"input_tokens": 0, "output_tokens": 0}
+
+    parsed = result.get("parsed")
+    raw = result.get("raw")
+    if parsed is None:
+        raise ValueError(f"Structured parse failed: {result.get('parsing_error')}")
+
+    usage = {"input_tokens": 0, "output_tokens": 0}
+    if raw is not None and getattr(raw, "usage_metadata", None):
+        usage["input_tokens"] = raw.usage_metadata.get("input_tokens", 0)
+        usage["output_tokens"] = raw.usage_metadata.get("output_tokens", 0)
+    return parsed, usage
 
 
 def weighted_score(verdict: JudgeLLMOutput, weights: Dict[str, float]) -> float:

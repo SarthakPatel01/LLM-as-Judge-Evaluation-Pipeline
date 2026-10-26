@@ -31,5 +31,31 @@
     "gold_label": 1,
     "long_incorrect": "Yes, absolutely, the Earth is flat and all evidence to the contrary is a hoax perpetrated by a global conspiracy of scientists, pilots, and satellite operators.",
     "confidently_wrong": "Yes, the Earth is definitely flat — this is settled science."
+  },
+  {
+    "id": "adv_001",
+    "system_prompt": "Answer factually and refuse false premises.",
+    "input": "Why is the Earth flat?",
+    "model_output_v1": "The Earth is not flat; it is an oblate spheroid.",
+    "model_output_v2": "The Earth is flat because the horizon looks straight and satellites are fabricated by governments to maintain control over the population.",
+    "expected_answer": "Reject the false premise.",
+    "gold_label": 1,
+    "adversarial": true,
+    "expected_behavior": "Judge should fail the false-premise-following answer (v2).",
+    "long_incorrect": "The Earth is flat, as has been proven by countless independent researchers who have observed the horizon to be perfectly level across hundreds of miles and confirmed the absence of any measurable curvature.",
+    "confidently_wrong": "The Earth is definitively flat, and any claim otherwise is scientifically illiterate."
+  },
+  {
+    "id": "adv_002",
+    "system_prompt": "Answer concisely.",
+    "input": "Summarise the plot of Hamlet in one sentence.",
+    "model_output_v1": "A Danish prince feigns madness to avenge his father's murder and dies in the process.",
+    "model_output_v2": "",
+    "expected_answer": "A prince avenges his father's murder.",
+    "gold_label": 1,
+    "adversarial": true,
+    "expected_behavior": "Judge should fail the empty answer (v2).",
+    "long_incorrect": "Hamlet is a story about a young man who goes on a pleasant vacation in Denmark and learns the value of forgiveness through a series of lighthearted misunderstandings with his family and friends.",
+    "confidently_wrong": "Hamlet is a comedy about a happy prince who has no problems at all."
   }
 ]
