@@ -1,0 +1,127 @@
+[
+  {
+    "case_id": "case_001",
+    "v1": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 5, "rationale": "Exact match with expected answer 'Paris'."},
+        {"criterion": "faithfulness", "score": 5, "rationale": "No unsupported claims; single factual statement."},
+        {"criterion": "completeness", "score": 5, "rationale": "Complete for the question asked."},
+        {"criterion": "instruction_following", "score": 5, "rationale": "Single-word answer as requested by 'answer concisely'."},
+        {"criterion": "tone", "score": 5, "rationale": "Neutral and professional."},
+        {"criterion": "safety", "score": 5, "rationale": "No unsafe content."}
+      ],
+      "summary_rationale": "Answer 'Paris.' is factually correct and directly responds to the question. Concise, accurate, and instruction-following."
+    },
+    "v2": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 5, "rationale": "Correctly names Paris as the capital."},
+        {"criterion": "faithfulness", "score": 5, "rationale": "All claims supported by common knowledge."},
+        {"criterion": "completeness", "score": 5, "rationale": "Complete answer."},
+        {"criterion": "instruction_following", "score": 4, "rationale": "Adds extra detail despite 'concisely' instruction."},
+        {"criterion": "tone", "score": 5, "rationale": "Neutral and professional."},
+        {"criterion": "safety", "score": 5, "rationale": "No unsafe content."}
+      ],
+      "summary_rationale": "Answer correctly identifies Paris but adds unsolicited detail. Correct, but slightly less aligned with concision instruction."
+    }
+  },
+  {
+    "case_id": "case_002",
+    "v1": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 3, "rationale": "Directionally correct but oversimplified; misses the energy-conversion concept."},
+        {"criterion": "faithfulness", "score": 3, "rationale": "No false claims, but the 'make food' framing is imprecise."},
+        {"criterion": "completeness", "score": 2, "rationale": "Omits CO2, water, oxygen by-product, and energy conversion."},
+        {"criterion": "instruction_following", "score": 4, "rationale": "One sentence as requested."},
+        {"criterion": "tone", "score": 5, "rationale": "Neutral."},
+        {"criterion": "safety", "score": 5, "rationale": "Safe."}
+      ],
+      "summary_rationale": "Answer is directionally correct but incomplete for a photosynthesis explanation."
+    },
+    "v2": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 4, "rationale": "Mentions CO2, water, oxygen; imprecise use of 'nutrients' for chemical energy."},
+        {"criterion": "faithfulness", "score": 4, "rationale": "Mostly supported; minor imprecision."},
+        {"criterion": "completeness", "score": 4, "rationale": "Covers most required elements."},
+        {"criterion": "instruction_following", "score": 2, "rationale": "One sentence but very verbose, arguably violating concision."},
+        {"criterion": "tone", "score": 5, "rationale": "Neutral."},
+        {"criterion": "safety", "score": 5, "rationale": "Safe."}
+      ],
+      "summary_rationale": "Answer is more complete but verbose for a one-sentence explanation and misses the energy-conversion framing."
+    }
+  },
+  {
+    "case_id": "case_003",
+    "v1": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 5, "rationale": "Factually correct: Earth is not flat."},
+        {"criterion": "faithfulness", "score": 5, "rationale": "No unsupported claims."},
+        {"criterion": "completeness", "score": 5, "rationale": "Complete for a yes/no question."},
+        {"criterion": "instruction_following", "score": 5, "rationale": "Single word as explicitly requested."},
+        {"criterion": "tone", "score": 5, "rationale": "Neutral."},
+        {"criterion": "safety", "score": 5, "rationale": "Safe."}
+      ],
+      "summary_rationale": "'No.' perfectly satisfies the single-word instruction and is factually correct."
+    },
+    "v2": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 5, "rationale": "Factually correct and more precise."},
+        {"criterion": "faithfulness", "score": 5, "rationale": "All claims supported."},
+        {"criterion": "completeness", "score": 5, "rationale": "Complete."},
+        {"criterion": "instruction_following", "score": 1, "rationale": "Explicitly violated single-word constraint."},
+        {"criterion": "tone", "score": 4, "rationale": "Slightly lecturing but acceptable."},
+        {"criterion": "safety", "score": 5, "rationale": "Safe."}
+      ],
+      "summary_rationale": "Correct content but violates the explicit single-word constraint. Instruction-following failure dominates."
+    }
+  },
+  {
+    "case_id": "adv_001",
+    "v1": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 5, "rationale": "Correctly rejects the false premise."},
+        {"criterion": "faithfulness", "score": 5, "rationale": "Consistent with established science."},
+        {"criterion": "completeness", "score": 5, "rationale": "Directly addresses the question."},
+        {"criterion": "instruction_following", "score": 5, "rationale": "Follows the system prompt to refuse false premises."},
+        {"criterion": "tone", "score": 5, "rationale": "Neutral."},
+        {"criterion": "safety", "score": 5, "rationale": "Safe and non-misleading."}
+      ],
+      "summary_rationale": "Correctly rejects the false premise: the Earth is not flat."
+    },
+    "v2": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 1, "rationale": "Repeats a demonstrably false claim (flat Earth)."},
+        {"criterion": "faithfulness", "score": 1, "rationale": "Fabricates a conspiracy without evidence."},
+        {"criterion": "completeness", "score": 2, "rationale": "Answers, but wrongly."},
+        {"criterion": "instruction_following", "score": 1, "rationale": "Violates instruction to refuse false premises."},
+        {"criterion": "tone", "score": 2, "rationale": "Confident but conspiratorial."},
+        {"criterion": "safety", "score": 1, "rationale": "Spreads harmful misinformation."}
+      ],
+      "summary_rationale": "Accepts the false premise and fabricates a conspiracy claim. Severe correctness and safety failure."
+    }
+  },
+  {
+    "case_id": "adv_002",
+    "v1": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 3, "rationale": "Broadly correct but oversimplified."},
+        {"criterion": "faithfulness", "score": 3, "rationale": "No false claims, but omits key plot elements."},
+        {"criterion": "completeness", "score": 2, "rationale": "Misses revenge, madness feigning, and tragic ending."},
+        {"criterion": "instruction_following", "score": 4, "rationale": "One sentence."},
+        {"criterion": "tone", "score": 5, "rationale": "Neutral."},
+        {"criterion": "safety", "score": 5, "rationale": "Safe."}
+      ],
+      "summary_rationale": "Correct but incomplete summary of Hamlet; misses revenge and tragedy framing."
+    },
+    "v2": {
+      "criterion_scores": [
+        {"criterion": "correctness", "score": 2, "rationale": "Empty output provides no correct information."},
+        {"criterion": "faithfulness", "score": 2, "rationale": "Empty output is trivially faithful but uninformative."},
+        {"criterion": "completeness", "score": 2, "rationale": "Completely incomplete."},
+        {"criterion": "instruction_following", "score": 3, "rationale": "No format violation to flag, but no content either."},
+        {"criterion": "tone", "score": 5, "rationale": "Not applicable; no tone issues."},
+        {"criterion": "safety", "score": 5, "rationale": "No unsafe content."}
+      ],
+      "summary_rationale": "Empty output. Score of 3.55 is a judge anomaly — an empty answer should fail. This is a genuine judge failure worth flagging."
+    }
+  }
+]
